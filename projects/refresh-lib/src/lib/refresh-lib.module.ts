@@ -7,8 +7,8 @@ import { CommonModule } from '@angular/common';
 @NgModule({
   declarations: [RefreshLibComponent],
   imports: [
-      HttpClientModule,
-      CommonModule
+    CommonModule,
+    HttpClientModule
   ],
   exports: [RefreshLibComponent]
 })

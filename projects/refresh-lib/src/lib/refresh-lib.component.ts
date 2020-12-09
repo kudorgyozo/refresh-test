@@ -1,26 +1,34 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, NgZone, OnChanges, OnInit, SimpleChanges, ViewEncapsulation } from '@angular/core';
 import { delay } from './stuff';
 
 @Component({
-    selector: 'lib-refresh-lib',
-    templateUrl: './refresh-lib.component.html'
+    selector: 'refresh-component',
+    templateUrl: './refresh-lib.component.html',
+    encapsulation: ViewEncapsulation.ShadowDom
 })
-export class RefreshLibComponent implements OnInit {
+export class RefreshLibComponent implements OnInit, OnChanges {
 
-    counter = 0;
-    someData : any = { a: 1, b: 2 };
+    asyncCalls = 0;
+    @Input() counter = 0;
 
-    constructor(private http: HttpClient) {
+    state = 0;
 
+    constructor(private http: HttpClient) { }
+
+    async ngOnChanges(changes: SimpleChanges): Promise<any> {
+        console.log(`onchanges is in zone: ${NgZone.isInAngularZone()}`);
+        this.state++;
+        await this.doAsyncCall();
     }
 
-
     async ngOnInit(): Promise<any> {
-        await delay(1000);
-        this.counter = 1;
-        const result = await this.http.get('assets/value.json').toPromise();
-        this.someData = result;
+    }
+
+    async doAsyncCall(): Promise<any> {
+        await delay(500);
+        this.asyncCalls++;
+        await this.http.get('assets/value.json').toPromise();
     }
 
 }
